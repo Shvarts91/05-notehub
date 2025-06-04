@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type Note from "../types/note";
+import type Note from "../../types/note";
 import css from "./NoteList.module.css";
-import { deleteNote } from "../services/noteService";
+import { deleteNote } from "../../services/noteService";
 
 interface NoteListProps {
   list: Note[];
@@ -21,8 +21,6 @@ const NoteList = ({ list }: NoteListProps) => {
   });
 
   const deleteNoteClickButton = (id: number) => {
-   
-
     mutation.mutate({ id });
   };
   return (

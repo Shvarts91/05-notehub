@@ -2,7 +2,7 @@ import { Field, ErrorMessage, Form, Formik, type FormikHelpers } from "formik";
 import { useId } from "react";
 import css from "./NoteForm.module.css";
 import * as Yup from "yup";
-import type { NoteWithoutId } from "../types/note";
+import type { NoteWithoutId } from "../../types/note";
 
 const OrderSchema = Yup.object().shape({
   title: Yup.string()

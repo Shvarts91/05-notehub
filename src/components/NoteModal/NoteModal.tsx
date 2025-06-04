@@ -3,8 +3,8 @@ import NoteForm from "../NoteForm/NoteForm";
 import css from "./NoteModal.module.css";
 
 import { createPortal } from "react-dom";
-import { createNote } from "../services/noteService";
-import type { NoteWithoutId } from "../types/note";
+import { createNote } from "../../services/noteService";
+import type { NoteWithoutId } from "../../types/note";
 
 interface NoteModalProps {
   closeModal: () => void;
@@ -12,7 +12,7 @@ interface NoteModalProps {
 
 const NoteModal = ({ closeModal }: NoteModalProps) => {
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["noteList"] });
@@ -23,7 +23,7 @@ const NoteModal = ({ closeModal }: NoteModalProps) => {
   });
 
   const onCreateNote = (noteValues: NoteWithoutId) => {
-    mutation.mutate(noteValues);
+    mutate(noteValues);
   };
 
   return createPortal(

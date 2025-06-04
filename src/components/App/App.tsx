@@ -3,26 +3,26 @@ import NoteList from "../NoteList/NoteList";
 import css from "./App.module.css";
 import SearchBox from "../SearchBox/SearchBox";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchNotes } from "../services/noteService";
+import { fetchNotes } from "../../services/noteService";
 import Pagination from "../Padination/Pagination";
 import NoteModal from "../NoteModal/NoteModal";
 import { useDebounce } from "use-debounce";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import Loader from "../Loader/Loader";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [pageCount, setPageCount] = useState<number>(1);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const { data, isError, isSuccess } = useQuery({
+  const { data, isError, isPending } = useQuery({
     queryKey: ["noteList", pageCount, debouncedSearchQuery],
     queryFn: () =>
-      fetchNotes({ page: pageCount, perPage: 10, search: searchQuery }),
+      fetchNotes({ page: pageCount, perPage: 12, search: searchQuery }),
     placeholderData: keepPreviousData,
   });
 
   const updateSearchQuery = (text: string) => {
-    console.log(text);
-
     setSearchQuery(text);
   };
 
@@ -47,7 +47,9 @@ function App() {
         </button>
       </header>
       {isOpenModal && <NoteModal closeModal={closeModal} />}
+      {isPending && <Loader />}
       {data?.notes && <NoteList list={data.notes} />}
+      {isError && <ErrorMessage />}
     </div>
   );
 }

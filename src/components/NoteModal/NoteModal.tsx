@@ -12,7 +12,7 @@ interface NoteModalProps {
 
 const NoteModal = ({ closeModal }: NoteModalProps) => {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const mutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["noteList"] });
@@ -23,7 +23,7 @@ const NoteModal = ({ closeModal }: NoteModalProps) => {
   });
 
   const onCreateNote = (noteValues: NoteWithoutId) => {
-    mutate(noteValues);
+    mutation.mutate(noteValues);
   };
 
   return createPortal(

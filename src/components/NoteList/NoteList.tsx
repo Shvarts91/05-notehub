@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type Note from "../../types/note";
+import type { Note } from "../../types/note";
 import css from "./NoteList.module.css";
-import { deleteNote } from "../../services/noteService";
+import { deleteIdNote } from "../../services/noteService";
 
 interface NoteListProps {
   list: Note[];
@@ -10,7 +10,7 @@ interface NoteListProps {
 const NoteList = ({ list }: NoteListProps) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: deleteNote,
+    mutationFn: deleteIdNote,
     onSuccess: (data) => {
       console.log("Notate delete:", data);
       queryClient.invalidateQueries({ queryKey: ["noteList"] });
@@ -21,7 +21,7 @@ const NoteList = ({ list }: NoteListProps) => {
   });
 
   const deleteNoteClickButton = (id: number) => {
-    mutation.mutate({ id });
+    mutation.mutate(id);
   };
   return (
     <ul className={css.list}>
@@ -33,7 +33,7 @@ const NoteList = ({ list }: NoteListProps) => {
             <div className={css.footer}>
               <span className={css.tag}>{note.tag}</span>
               <button
-                onClick={() => deleteNoteClickButton(note.id)}
+                onClick={() => deleteNoteClickButton(note.id!)}
                 className={css.button}
               >
                 Delete

@@ -2,7 +2,9 @@ import { Field, ErrorMessage, Form, Formik, type FormikHelpers } from "formik";
 import { useId } from "react";
 import css from "./NoteForm.module.css";
 import * as Yup from "yup";
-import type { NoteWithoutId } from "../../types/note";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNote } from "../../services/noteService";
+import type { Note } from "../../types/note";
 
 const OrderSchema = Yup.object().shape({
   title: Yup.string()
@@ -15,27 +17,35 @@ const OrderSchema = Yup.object().shape({
     .required("This field is required!"),
 });
 
-const initialValues: NoteWithoutId = {
+const initialValues: Note = {
   title: "",
   content: "",
   tag: "",
 };
 
 interface NoteFormProps {
-  closeModal: () => void;
-  onCreateNote: (noteValues: NoteWithoutId) => void;
+  onClose: () => void;
 }
 
-const NoteForm = ({ closeModal, onCreateNote }: NoteFormProps) => {
+const NoteForm = ({ onClose }: NoteFormProps) => {
   const fieldId = useId();
+  const queryClient = useQueryClient();
 
-  const handleSubmit = (
-    values: NoteWithoutId,
-    actions: FormikHelpers<NoteWithoutId>
-  ) => {
-    onCreateNote(values);
+  const mutation = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["noteList"] });
+      onClose();
+    },
+    onError: (error) => {
+      console.error("Помилка створення нотатки:", error);
+    },
+  });
+
+  const handleSubmit = (values: Note, actions: FormikHelpers<Note>) => {
+    mutation.mutate(values);
     actions.resetForm();
-    closeModal();
+    onClose();
   };
 
   return (
@@ -78,11 +88,7 @@ const NoteForm = ({ closeModal, onCreateNote }: NoteFormProps) => {
           <ErrorMessage component="span" className={css.error} name="tag" />
         </fieldset>
         <fieldset className={css.actions}>
-          <button
-            onClick={closeModal}
-            type="button"
-            className={css.cancelButton}
-          >
+          <button onClick={onClose} type="button" className={css.cancelButton}>
             Cancel
           </button>
           <button type="submit" className={css.submitButton} disabled={false}>

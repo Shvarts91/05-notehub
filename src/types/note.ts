@@ -1,8 +1,8 @@
-export default interface Note {
-  id: number;
+export interface Note {
+  id?: number;
   title: string;
   content: string;
   tag: string;
 }
 
-export type NoteWithoutId = Omit<Note, 'id'>;
+// export type NoteWithoutId = Omit<Note, "id">;

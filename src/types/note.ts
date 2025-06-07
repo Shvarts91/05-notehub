@@ -1,8 +1,14 @@
+type NoteTag = "Work" | "Personal" | "Shopping" | "Meeting" | "Todo";
+
 export interface Note {
-  id?: number;
+  id: number;
   title: string;
   content: string;
-  tag: string;
+  tag: NoteTag;
 }
 
-// export type NoteWithoutId = Omit<Note, "id">;
+export interface CreateNoteType {
+  title: string;
+  content?: string;
+  tag: "" | NoteTag;
+}

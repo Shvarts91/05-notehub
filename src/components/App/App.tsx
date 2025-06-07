@@ -16,13 +16,13 @@ function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { data, isError, isPending } = useQuery({
-    queryKey: ["noteList", currentPage, debouncedSearchQuery],
+    queryKey: ["noteList", debouncedSearchQuery, currentPage],
     queryFn: () => fetchNotes(currentPage, debouncedSearchQuery),
     placeholderData: keepPreviousData,
   });
 
   const onPageChange = (page: number) => {
-    setCurrentPage(page + 1);
+    setCurrentPage(page);
   };
 
   const updateSearchQuery = (text: string) => {

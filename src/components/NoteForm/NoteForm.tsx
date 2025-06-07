@@ -4,7 +4,7 @@ import css from "./NoteForm.module.css";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../../services/noteService";
-import type { Note } from "../../types/note";
+import type { CreateNoteType } from "../../types/note";
 
 const OrderSchema = Yup.object().shape({
   title: Yup.string()
@@ -17,7 +17,7 @@ const OrderSchema = Yup.object().shape({
     .required("This field is required!"),
 });
 
-const initialValues: Note = {
+const initialValues: CreateNoteType = {
   title: "",
   content: "",
   tag: "",
@@ -35,17 +35,22 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["noteList"] });
-      onClose();
     },
     onError: (error) => {
       console.error("Помилка створення нотатки:", error);
     },
   });
 
-  const handleSubmit = (values: Note, actions: FormikHelpers<Note>) => {
-    mutation.mutate(values);
-    actions.resetForm();
-    onClose();
+  const handleSubmit = async (
+    values: CreateNoteType,
+    actions: FormikHelpers<CreateNoteType>
+  ) => {
+    const response = await mutation.mutateAsync(values);
+
+    if (response) {
+      actions.resetForm();
+      onClose();
+    }
   };
 
   return (

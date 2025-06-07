@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from "axios";
-import type { Note } from "../types/note";
+import type { CreateNoteType, Note } from "../types/note";
 
 interface Notes {
   notes: Note[];
@@ -34,7 +34,7 @@ export const fetchNotes = async (
   return response.data;
 };
 
-export const createNote = async (payload: Note): Promise<Note> => {
+export const createNote = async (payload: CreateNoteType): Promise<Note> => {
   const response = await axios.post<Note>(
     "https://notehub-public.goit.study/api/notes",
     payload,
